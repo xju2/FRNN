@@ -19,7 +19,7 @@ Should be also fine other versions of cuda/python/pytorch.
 ## Install
 
 ```
-git clone --recursive https://github.com/lxxue/FRNN.git
+git clone --recursive https://github.com/murnanedaniel/FRNN.git
 # install a prefix_sum routine first
 cd FRNN/external/prefix_sum
 python setup.py install
