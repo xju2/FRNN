@@ -319,12 +319,6 @@ __global__ void FindNbrsNDKernelV1(
         }
       }
     }
-    // TODO: add return_sort here
-    mink.sort();
-    // for (int k = 0; k < mink.size(); ++k) {
-    //   idxs[n * P1 * K + old_p1 * K + k] = min_idxs[k];
-    //   dists[n * P1 * K + old_p1 * K + k] = min_dists[k];
-    // }
   }
 }
 
