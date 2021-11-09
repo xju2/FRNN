@@ -43,7 +43,7 @@ class _frnn_grid_points(Function):
         N = points1.shape[0]
         D = points1.shape[2]
         # assert D == 2 or D == 3, "For now only 2D/3D is supported"
-        assert D >= 2 and D <= 16, "For now 2 <= D <= 16"
+        # assert D >= 2 and D <= 32
         # setup grid params
         # for D > 3, still use 3D grid
         # TODO: use PCA
@@ -52,14 +52,14 @@ class _frnn_grid_points(Function):
             grid_params_size = 8
             grid_delta_idx = 3
             grid_total_idx = 7
-            grid_max_res = 128
+            grid_max_res = 64
             grid_dim = 3
         else:
             # 0-1 grid_min; 2 grid_delta; 3-4 grid_res; 5 grid_total
             grid_params_size = 6
             grid_delta_idx = 2
             grid_total_idx = 5
-            grid_max_res = 1024
+            grid_max_res = 512
             grid_dim = 2
 
         if not use_cached_grid:
@@ -75,12 +75,13 @@ class _frnn_grid_points(Function):
                 grid_params_cuda[i, :grid_delta_idx] = grid_min
                 grid_size = grid_max - grid_min
                 cell_size = r[i].item() / radius_cell_ratio
-                if cell_size < grid_size.min() / grid_max_res:
-                    cell_size = grid_size.min() / grid_max_res
+                if cell_size < grid_size.max() / grid_max_res:
+                    cell_size = grid_size.max() / grid_max_res
                 grid_params_cuda[i, grid_delta_idx] = 1 / cell_size
                 grid_params_cuda[i, grid_delta_idx +
                                  1:grid_total_idx] = torch.floor(
                                      grid_size / cell_size) + 1
+                print(grid_params_cuda[i, grid_delta_idx + 1:grid_total_idx])
                 grid_params_cuda[i, grid_total_idx] = torch.prod(
                     grid_params_cuda[i, grid_delta_idx + 1:grid_total_idx])
                 if G < grid_params_cuda[i, grid_total_idx]:
@@ -289,9 +290,9 @@ def frnn_grid_points(
         )
     # if points1.shape[2] != 2 and points1.shape[2] != 3:
     #     raise ValueError("for now only grid in 2D/3D is supported")
-    if points1.shape[2] < 2 or points1.shape[2] > 16:
-        raise ValueError(
-            "for now only point clouds of dimension 2-16 is supported")
+    # if points1.shape[2] < 2 or points1.shape[2] > 32:
+    #     raise ValueError(
+    #         "for now only point clouds of dimension 2-32 is supported")
     if not points1.is_cuda or not points2.is_cuda:
         raise TypeError("for now only cuda version is supported")
 
@@ -313,7 +314,7 @@ def frnn_grid_points(
                               device=points2.device)
 
     N = points1.shape[0]
-    if isinstance(r, float):
+    if isinstance(r, float) or isinstance(r, int):
         r = torch.ones((N,), dtype=torch.float32) * r
     if isinstance(r, torch.Tensor):
         assert (len(r.shape) == 1 and (r.shape[0] == 1 or r.shape[0] == N))

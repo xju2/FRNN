@@ -4,7 +4,7 @@ import torch
 import frnn
 from pytorch3d.ops.knn import knn_points
 
-num_points_fixed_query = 100000
+num_points_fixed_query = 1000
 torch.autograd.set_detect_anomaly(True)
 
 
@@ -105,6 +105,18 @@ class TestFRNN:
                                               return_nn=True)
         return dists, idxs, nn
 
+    def test_frnn_kd(self):
+        dists_knn, idxs_knn, nn_knn = self.knn()
+        dists_frnn, idxs_frnn, nn_frnn = self.frnn_grid()
+        idxs_knn[dists_knn > self.r * self.r] = -1
+        dists_knn[dists_knn > self.r * self.r] = -1
+        idxs_all_same = torch.all(idxs_frnn == idxs_knn).item()
+        diff_keys_percentage = torch.sum(idxs_frnn == idxs_knn).type(
+            torch.float).item(
+            ) / self.K / self.pc1_frnn.shape[1] / self.num_pcs
+        dists_all_close = torch.allclose(dists_frnn, dists_knn)
+        return [idxs_all_same, diff_keys_percentage, dists_all_close]
+
     def compare_frnn_knn(self):
         # forward
         dists_knn, idxs_knn, nn_knn = self.knn()
@@ -182,10 +194,14 @@ if __name__ == "__main__":
             'Dim', 'Different key percentage', 'Dists all close',
             'Different key percentage reuse', 'Dists all close reuse'
         ])
-        for d in range(2, 9):
-            for k in range(14, 65, 10):
+        for d in range(2, 70, 4):
+            for k in range(2, 70, 4):
+
+                # for d in [14]:
+                #     for k in [30]:
                 validator = TestFRNN(D=d, K=k, backward=True)
-                results = validator.compare_frnn_knn()
+                # results = validator.compare_frnn_knn()
+                results = validator.test_frnn_kd()
                 print(d, k, results)
                 writer.writerow(results)
             # results = validator.compare_frnnreuse_knn()
