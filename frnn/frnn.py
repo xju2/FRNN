@@ -81,7 +81,7 @@ class _frnn_grid_points(Function):
                 grid_params_cuda[i, grid_delta_idx +
                                  1:grid_total_idx] = torch.floor(
                                      grid_size / cell_size) + 1
-                print(grid_params_cuda[i, grid_delta_idx + 1:grid_total_idx])
+                # print(grid_params_cuda[i, grid_delta_idx + 1:grid_total_idx])
                 grid_params_cuda[i, grid_total_idx] = torch.prod(
                     grid_params_cuda[i, grid_delta_idx + 1:grid_total_idx])
                 if G < grid_params_cuda[i, grid_total_idx]:
