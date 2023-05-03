@@ -315,7 +315,7 @@ def frnn_grid_points(
 
     N = points1.shape[0]
     if isinstance(r, float) or isinstance(r, int):
-        r = torch.ones((N,), dtype=torch.float32) * r
+        r = torch.ones((N,), dtype=torch.float32, device=points1.device) * r
     if isinstance(r, torch.Tensor):
         assert (len(r.shape) == 1 and (r.shape[0] == 1 or r.shape[0] == N))
         if r.shape[0] == 1:
