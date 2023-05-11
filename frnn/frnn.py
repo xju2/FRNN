@@ -1,6 +1,7 @@
 # create an interface similar to pytorch3d's knn
 from collections import namedtuple
 from typing import Union
+import warnings
 
 import torch
 
@@ -295,6 +296,10 @@ def frnn_grid_points(
     #         "for now only point clouds of dimension 2-32 is supported")
     if not points1.is_cuda or not points2.is_cuda:
         raise TypeError("for now only cuda version is supported")
+    
+    if points1.device != points2.device:
+        warnings.warn("points1 and points2 must be on the same device")
+        points2 = points2.to(points1.device)
 
     points1 = points1.contiguous()
     points2 = points2.contiguous()
