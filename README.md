@@ -21,8 +21,7 @@ Should be also fine other versions of cuda/python/pytorch.
 ```shell
 git clone --recursive https://github.com/asnaylor/FRNN.git
 cd FRNN
-make # This installs prefix_sum and then FRNN with A100 NVCC flags
-#Use export NVCC_FLAGS for other GPUs
+make # This installs prefix_sum and then FRNN
 ```
 
 ## Usage
