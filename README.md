@@ -18,15 +18,10 @@ Should be also fine other versions of cuda/python/pytorch.
 
 ## Install
 
-```
-git clone --recursive https://github.com/murnanedaniel/FRNN.git
-# install a prefix_sum routine first
-cd FRNN/external/prefix_sum
-python setup.py install
-
-# install FRNN
-cd ../../ # back to the {FRNN} directory
-python setup.py install
+```shell
+git clone --recursive https://github.com/asnaylor/FRNN.git
+cd FRNN
+make # This installs prefix_sum and then FRNN
 ```
 
 ## Usage
@@ -34,7 +29,7 @@ python setup.py install
 For fixed nearest neighbors search:
 [doc](https://github.com/lxxue/FRNN/blob/59a4c8fdc786c64afd991919af39f1a65d4ec2ff/frnn/frnn.py#L154-L224)
 
-```
+```python
   # first time there is no cached grid
   dists, idxs, nn, grid = frnn.frnn_grid_points(
         points1, points2, lengths1, lengths2, K, r, grid=None, return_nn=False, return_sorted=True
@@ -48,7 +43,7 @@ For fixed nearest neighbors search:
 For manually gather nearest neighbors from idxs generated via frnn_grid_points:
 [doc](https://github.com/lxxue/FRNN/blob/59a4c8fdc786c64afd991919af39f1a65d4ec2ff/frnn/frnn.py#L268-L292)
 
-```
+```python
   nn = frnn.frnn_gather(points2, idxs, lengths2)
 ```
 
