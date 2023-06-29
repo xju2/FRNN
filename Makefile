@@ -4,9 +4,9 @@ NCORES ?= 4
 install:
 	$(info [Makefile]: Installing prefix_sum)
 	cd external/prefix_sum/; \
-	NVCC_FLAGS=${CUDA_COMPUTE} MAX_JOBS=${NCORES} python setup.py install
+	NVCC_FLAGS="${CUDA_COMPUTE}" MAX_JOBS=${NCORES} python setup.py install
 	$(info [Makefile]: Installing frnn)
-	NVCC_FLAGS=${CUDA_COMPUTE} MAX_JOBS=${NCORES} python setup.py install
+	NVCC_FLAGS="${CUDA_COMPUTE}" MAX_JOBS=${NCORES} python setup.py install
 
 clean:
 	$(info [Makefile]: Uninstalling prefix_sum + frnn)
